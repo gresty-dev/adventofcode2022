@@ -10,7 +10,7 @@ fun read(resourceName: String) : Sequence<String> {
 fun execute(task: (Sequence<String>) -> Int, resourceName: String) : Long {
     val resource = read(resourceName)
     val result: Int
-    val time = measureNanoTime { result = task.invoke(resource) }.nanoseconds.inWholeMilliseconds
-    println("$result - $time ms")
+    val time = measureNanoTime { result = task.invoke(resource) }.nanoseconds.inWholeMicroseconds
+    println("$result - $time us")
     return time
 }
