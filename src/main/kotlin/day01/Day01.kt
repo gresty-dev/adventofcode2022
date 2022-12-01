@@ -1,17 +1,17 @@
 package dev.gresty.aoc.adventofcode2022.day01
 
-import dev.gresty.aoc.adventofcode2022.read
+import dev.gresty.aoc.adventofcode2022.execute
 
 fun main() {
-    println(solveA(read("day01.txt")))
-    println(solveB(read("day01.txt")))
+    execute(::solve01A, "day01.txt")
+    execute(::solve01B, "day01.txt")
 }
 
-fun solveA(input: Sequence<String>): Int {
+fun solve01A(input: Sequence<String>): Int {
     return solve(input, 1)
 }
 
-fun solveB(input: Sequence<String>) : Int {
+fun solve01B(input: Sequence<String>) : Int {
     return solve(input, 3)
 }
 
