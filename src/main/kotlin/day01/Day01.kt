@@ -16,19 +16,22 @@ fun solve01B(input: Sequence<String>) : Int {
 }
 
 fun solve(input: Sequence<String>, elfCount: Int) : Int {
-    val elfCalories = IntArray(elfCount)
+    val topElfCalories = IntArray(elfCount)
     var currentCalories = 0
+
+    val addCaloriesToList = {
+        if (currentCalories > topElfCalories[0]) {
+            topElfCalories[0] = currentCalories
+            topElfCalories.sort()
+        }
+        currentCalories = 0
+    }
 
     input.forEach {
         if (it.isNotEmpty()) currentCalories += it.toInt()
-        else {
-            if (currentCalories > elfCalories[0]) {
-                elfCalories[0] = currentCalories
-                elfCalories.sort()
-            }
-            currentCalories = 0
-        }
+        else addCaloriesToList()
     }
+    addCaloriesToList()
 
-    return elfCalories.sum()
+    return topElfCalories.sum()
 }
