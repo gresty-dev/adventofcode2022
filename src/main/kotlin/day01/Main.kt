@@ -6,6 +6,6 @@ fun main() {
     var time = 0L
     time += execute(::solve01A, "day01.txt")
     time += execute(::solve01B, "day01.txt")
-    println("Total time: $time ms")
+    println("Total time: $time us")
 
 }
