@@ -19,7 +19,7 @@ class Day02Tests : FunSpec () {
         }
 
         test("Execute example 2") {
-            solve02B(example1.lineSequence()).shouldBe(15)
+            solve02B(example1.lineSequence()).shouldBe(12)
         }
     }
 }
