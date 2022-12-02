@@ -1,5 +1,7 @@
-package dev.gresty.aoc.adventofcode2022.day01
+package dev.gresty.aoc.adventofcode2022
 
+import dev.gresty.aoc.adventofcode2022.day01.solve01A
+import dev.gresty.aoc.adventofcode2022.day01.solve01B
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
