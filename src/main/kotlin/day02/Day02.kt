@@ -8,51 +8,37 @@ fun main() {
 }
 
 fun solve02A(input: Sequence<String>) : Int {
-    return input.map { move(it[2]).plays(move(it[0])) }.sum()
+    return input.map { handOf(it[2]).plays(handOf(it[0])) }.sum()
 }
 
 fun solve02B(input: Sequence<String>) : Int {
-    return input.map { move(it[0]).resultsIn(it[2]) }.sum()
+    return input.map { handOf(it[0]).playsForOutcome(it[2]) }.sum()
 }
 
-sealed class Move(private val score: Int) {
-    abstract val beats: Move
+enum class Hand {
+    ROCK, PAPER, SCISSORS;
 
-    object ROCK: Move(1) {
-        override val beats = SCISSORS
-    }
+    private fun beats() = values()[(ordinal + 2) % 3] // +2 instead of -1 avoids dealing with negative modulus things
+    private fun isBeatenBy() = values()[(ordinal + 1) % 3]
+    private fun score() = ordinal + 1
 
-    object PAPER: Move(2) {
-        override val beats = ROCK
-    }
+    fun plays(other: Hand) = score() +
+            when(other) {
+                beats() -> 6
+                this -> 3
+                else -> 0
+            }
 
-    object SCISSORS: Move(3) {
-        override val beats = PAPER
-    }
-
-    fun plays(other: Move) : Int {
-        return score + if (beats == other) {
-            6
-        } else if (this == other) {
-            3
-        } else {
-            0
-        }
-    }
-
-    fun resultsIn(outcome: Char) : Int {
-        return when (outcome) {
-            'X' -> 0 + beats.score // lose
-            'Y' -> 3 + score // draw
-            else -> 6 + (score % 3 + 1)  // win
-        }
-    }
+    fun playsForOutcome(outcome: Char) =
+        when (outcome) {
+            'X' ->  beats()
+            'Y' ->  this
+            else -> isBeatenBy()
+        }.plays(this)
 }
 
-fun move(symbol: Char) : Move {
-    return when (symbol) {
-        'A', 'X' -> Move.ROCK
-        'B', 'Y' -> Move.PAPER
-        else -> Move.SCISSORS
-    }
+fun handOf(symbol: Char) = when (symbol) {
+    'A', 'X' -> Hand.ROCK
+    'B', 'Y' -> Hand.PAPER
+    else -> Hand.SCISSORS
 }
