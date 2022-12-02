@@ -8,7 +8,7 @@ fun main() {
 }
 
 fun solve02A(input: Sequence<String>) : Int {
-    return input.map { handOf(it[2]).plays(handOf(it[0])) }.sum()
+    return input.map { handOf(it[0]).plays(handOf(it[2])) }.sum()
 }
 
 fun solve02B(input: Sequence<String>) : Int {
@@ -18,23 +18,23 @@ fun solve02B(input: Sequence<String>) : Int {
 enum class Hand {
     ROCK, PAPER, SCISSORS;
 
-    private fun beats() = values()[(ordinal + 2) % 3] // +2 instead of -1 avoids dealing with negative modulus things
-    private fun isBeatenBy() = values()[(ordinal + 1) % 3]
+    private fun losesToMe() = values()[(ordinal + 2) % 3] // +2 instead of -1 avoids dealing with negative modulus things
+    private fun beatsMe() = values()[(ordinal + 1) % 3]
     private fun score() = ordinal + 1
 
-    fun plays(other: Hand) = score() +
+    fun plays(other: Hand) = other.score() +
             when(other) {
-                beats() -> 6
+                beatsMe() -> 6
                 this -> 3
                 else -> 0
             }
 
     fun playsForOutcome(outcome: Char) =
-        when (outcome) {
-            'X' ->  beats()
+        plays(when (outcome) {
+            'X' ->  losesToMe()
             'Y' ->  this
-            else -> isBeatenBy()
-        }.plays(this)
+            else -> beatsMe()
+        })
 }
 
 fun handOf(symbol: Char) = when (symbol) {
