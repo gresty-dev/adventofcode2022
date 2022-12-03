@@ -23,7 +23,7 @@ fun solve03B(input: Sequence<String>): Int {
         .sum()
 }
 
-fun divide(source: String) : Pair<String, String> =
+fun divide(source: String) =
     source.substring(0, source.length / 2) to source.substring(source.length / 2)
 
 fun findCommonItem(items: Pair<String, String>) =
