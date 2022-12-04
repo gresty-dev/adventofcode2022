@@ -2,35 +2,32 @@ package dev.gresty.aoc.adventofcode2022.day04
 
 import dev.gresty.aoc.adventofcode2022.execute
 
-val regex = """^(\d+)-(\d+),(\d+)-(\d+)$""".toRegex()
-
 fun main() {
     execute("day04.txt") { solve04A(it) }
     execute("day04.txt") { solve04B(it) }
 }
 
 fun solve04A(input: Sequence<String>): Int {
-    return input.map { parse(it) }
-        .map { asIntPair(it[1], it[2]) to asIntPair(it[3], it[4]) }
-        .filter { wraps(it.first, it.second) || wraps(it.second, it.first) }
+    return input.map { it.asIntRangePair() }
+        .filter { it.first wraps it.second || it.second wraps it.first }
         .count()
 }
 
 fun solve04B(input: Sequence<String>): Int {
-    return input.map { parse(it) }
-        .map { asIntPair(it[1], it[2]) to asIntPair(it[3], it[4]) }
-        .filter { !(isBefore(it.first, it.second) || isBefore(it.second, it.first)) }
+    return input.map { it.asIntRangePair() }
+        .filter { !(it.first isBefore it.second || it.second isBefore it.first ) }
         .count()
 }
 
-private fun parse(it: String) = regex.find(it)!!.groupValues
+fun String.asIntRangePair() =
+    substringBefore(',').asIntRange() to substringAfter(',').asIntRange()
 
-fun asIntPair(first: String, second: String) =
-    first.toInt() to second.toInt()
+fun String.asIntRange() =
+    substringBefore('-').toInt() .. substringAfter('-').toInt()
 
-fun wraps(first: Pair<Int, Int>, second: Pair<Int, Int>) =
-    first.first <= second.first && first.second >= second.second
+infix fun IntRange.wraps(other: IntRange) =
+    first <= other.first && last >= other.last
 
-fun isBefore(first: Pair<Int, Int>, second: Pair<Int, Int>) =
-    first.first < second.first && first.second < second.first
+infix fun IntRange.isBefore(other: IntRange) =
+    first < other.first && last < other.first
 
