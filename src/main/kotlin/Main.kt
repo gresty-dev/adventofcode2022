@@ -47,9 +47,8 @@ class MyApp : Callable<Int> {
         val input = "day${dayName}.txt"
 
         println("Day $day")
-        execute(solveA!!, input)
-        execute(solveB!!, input)
-
+        execute(input) { solveA!!(it) }
+        execute(input) { solveB!!(it) }
     }
 }
 

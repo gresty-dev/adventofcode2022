@@ -1,11 +1,10 @@
 package dev.gresty.aoc.adventofcode2022.day03
 
 import dev.gresty.aoc.adventofcode2022.execute
-import java.lang.IllegalStateException
 
 fun main() {
-    execute(::solve03A, "day03.txt")
-    execute(::solve03B, "day03.txt")
+    execute("day03.txt") { solve03A(it) }
+    execute("day03.txt") { solve03B(it) }
 }
 
 fun solve03A(input: Sequence<String>): Int {

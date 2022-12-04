@@ -3,8 +3,8 @@ package dev.gresty.aoc.adventofcode2022.day02
 import dev.gresty.aoc.adventofcode2022.execute
 
 fun main() {
-    execute(::solve02A, "day02.txt")
-    execute(::solve02B, "day02.txt")
+    execute("day02.txt") { solve02A(it) }
+    execute("day02.txt") { solve02B(it) }
 }
 
 fun solve02A(input: Sequence<String>) : Int {
