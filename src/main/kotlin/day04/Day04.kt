@@ -15,7 +15,7 @@ fun solve04A(input: Sequence<String>): Int {
 
 fun solve04B(input: Sequence<String>): Int {
     return input.map { it.asIntRangePair() }
-        .filter { !(it.first isBefore it.second || it.second isBefore it.first ) }
+        .filter { it.first overlaps it.second }
         .count()
 }
 
@@ -28,6 +28,6 @@ fun String.asIntRange() =
 infix fun IntRange.wraps(other: IntRange) =
     first <= other.first && last >= other.last
 
-infix fun IntRange.isBefore(other: IntRange) =
-    first < other.first && last < other.first
+infix fun IntRange.overlaps(other: IntRange) =
+    first <= other.last && last >= other.first
 
