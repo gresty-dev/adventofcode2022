@@ -8,6 +8,8 @@ import dev.gresty.aoc.adventofcode2022.day03.solve03A
 import dev.gresty.aoc.adventofcode2022.day03.solve03B
 import dev.gresty.aoc.adventofcode2022.day04.solve04A
 import dev.gresty.aoc.adventofcode2022.day04.solve04B
+import dev.gresty.aoc.adventofcode2022.day05.solve05A
+import dev.gresty.aoc.adventofcode2022.day05.solve05B
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
@@ -19,6 +21,7 @@ private val commandsByName = listOf(
     ::solve02A, ::solve02B,
     ::solve03A, ::solve03B,
     ::solve04A, ::solve04B,
+    ::solve05A, ::solve05B,
 ).associateBy { it.name }
 
 @Command(name = "aoc22",
