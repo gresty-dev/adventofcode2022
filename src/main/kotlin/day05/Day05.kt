@@ -10,24 +10,29 @@ fun main() {
 fun solve05A(input: Sequence<String>): String {
     val dock = Dock()
     input.forEach {
-        if (it.contains('[')) {
-            dock.addStackLevel(it)
-        } else if (it.contains("move")) {
-            dock.move(it)
-        } else if (it.contains('1')) {
-            dock.addStackNumbers(it)
+        when {
+            it.contains('[') -> dock.addStackLevel(it)
+            it.contains("move") -> dock.move(it)
+            it.contains('1') -> dock.addStackNumbers(it)
         }
     }
     return dock.stackTops()
 }
 
-fun solve05B(input: Sequence<String>): Int {
-    return 0
+fun solve05B(input: Sequence<String>): String {
+    val dock = Dock()
+    input.forEach {
+        when {
+            it.contains('[') -> dock.addStackLevel(it)
+            it.contains("move") -> dock.move2(it)
+            it.contains('1') -> dock.addStackNumbers(it)
+        }
+    }
+    return dock.stackTops()
 }
 
 class Dock {
-    val numbersRegex = """(\d+)""".toRegex()
-    val stacks = mutableMapOf<Int, MutableList<Char>>()
+    private val stacks = mutableMapOf<Int, MutableList<Char>>()
 
     fun addStackLevel(level: String) {
         for (i in 1..level.length step 4) {
@@ -41,15 +46,23 @@ class Dock {
         }
     }
 
-    fun move(crates: Int, from: Int, to: Int) {
+    fun move(instr: String) {
+        val crates = instr.substring(5, 7).trim().toInt()
+        val from = instr.substring(12, 14).trim().toInt()
+        val to = instr.substring(17).trim().toInt()
         for (i in 1..crates) {
             stacks[to]!!.add(stacks[from]!!.removeLast())
         }
     }
 
-    fun move(instr: String) {
-        val params = numbersRegex.findAll(instr).map { it.groupValues.get(1).toInt() }.toList()
-        move(params[0], params[1], params[2])
+    fun move2(instr: String) {
+        val crates = instr.substring(5, 7).trim().toInt()
+        val from = instr.substring(12, 14).trim().toInt()
+        val to = instr.substring(17).trim().toInt()
+        val removalIndex = stacks[from]!!.size - crates
+        for (i in 1..crates) {
+            stacks[to]!!.add(stacks[from]!!.removeAt(removalIndex))
+        }
     }
 
     fun stackTops() = (1..stacks.size).map { stacks[it]!!.last() }.joinToString(separator = "")

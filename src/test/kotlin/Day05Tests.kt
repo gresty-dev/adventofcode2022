@@ -25,7 +25,7 @@ class Day05Tests : FunSpec () {
         }
 
         test("Execute example B") {
-            solve05B(example1.lineSequence()).shouldBe(0)
+            solve05B(example1.lineSequence()).shouldBe("MCD")
         }
     }
 }
