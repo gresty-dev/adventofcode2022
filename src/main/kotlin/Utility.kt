@@ -7,9 +7,9 @@ fun read(resourceName: String) : Sequence<String> {
     return object {}.javaClass.getResourceAsStream(resourceName)?.bufferedReader()?.lineSequence()!!
 }
 
-fun execute(resourceName: String, task: (Sequence<String>) -> Int) : Long {
+fun <T> execute(resourceName: String, task: (Sequence<String>) -> T) : Long {
     val resource = read(resourceName)
-    val result: Int
+    val result: T
     val time = measureNanoTime { result = task.invoke(resource) }.nanoseconds.inWholeMicroseconds
     println("$result ($time us)")
     return time

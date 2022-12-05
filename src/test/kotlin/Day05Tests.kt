@@ -1,7 +1,7 @@
 package dev.gresty.aoc.adventofcode2022
 
-import dev.gresty.aoc.adventofcode2022.dayX.solveXXA
-import dev.gresty.aoc.adventofcode2022.dayX.solveXXB
+import dev.gresty.aoc.adventofcode2022.day05.solve05A
+import dev.gresty.aoc.adventofcode2022.day05.solve05B
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -21,11 +21,11 @@ class Day05Tests : FunSpec () {
 
     init {
         test("Execute example A") {
-            solveXXA(example1.lineSequence()).shouldBe(0)
+            solve05A(example1.lineSequence()).shouldBe("CMZ")
         }
 
         test("Execute example B") {
-            solveXXB(example1.lineSequence()).shouldBe(0)
+            solve05B(example1.lineSequence()).shouldBe(0)
         }
     }
 }
