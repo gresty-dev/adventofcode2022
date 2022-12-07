@@ -7,25 +7,21 @@ import io.kotest.matchers.shouldBe
 
 class Day06Tests : FunSpec () {
 
-    private val example1 = """
-        replaceme
-    """.trimIndent()
-
     init {
         test("Execute example A") {
-            solve06A("mjqjpqmgbljsphdztnvjfqwrcgsmlb".asSequence()).shouldBe(7)
-            solve06A("bvwbjplbgvbhsrlpgdmjqwftvncz".asSequence()).shouldBe(5)
-            solve06A("nppdvjthqldpwncqszvftbrmjlhg".asSequence()).shouldBe(6)
-            solve06A("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".asSequence()).shouldBe(10)
-            solve06A("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".asSequence()).shouldBe(11)
+            solve06A("mjqjpqmgbljsphdztnvjfqwrcgsmlb".lineSequence()).shouldBe(7)
+            solve06A("bvwbjplbgvbhsrlpgdmjqwftvncz".lineSequence()).shouldBe(5)
+            solve06A("nppdvjthqldpwncqszvftbrmjlhg".lineSequence()).shouldBe(6)
+            solve06A("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".lineSequence()).shouldBe(10)
+            solve06A("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".lineSequence()).shouldBe(11)
         }
 
         test("Execute example B") {
-            solve06B("mjqjpqmgbljsphdztnvjfqwrcgsmlb".asSequence()).shouldBe(19)
-            solve06B("bvwbjplbgvbhsrlpgdmjqwftvncz".asSequence()).shouldBe(23)
-            solve06B("nppdvjthqldpwncqszvftbrmjlhg".asSequence()).shouldBe(23)
-            solve06B("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".asSequence()).shouldBe(29)
-            solve06B("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".asSequence()).shouldBe(26)
+            solve06B("mjqjpqmgbljsphdztnvjfqwrcgsmlb".lineSequence()).shouldBe(19)
+            solve06B("bvwbjplbgvbhsrlpgdmjqwftvncz".lineSequence()).shouldBe(23)
+            solve06B("nppdvjthqldpwncqszvftbrmjlhg".lineSequence()).shouldBe(23)
+            solve06B("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg".lineSequence()).shouldBe(29)
+            solve06B("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw".lineSequence()).shouldBe(26)
         }
     }
 }
