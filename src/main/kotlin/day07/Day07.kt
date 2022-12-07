@@ -4,13 +4,14 @@ import dev.gresty.aoc.adventofcode2022.execute
 
 fun main() {
     execute("day07.txt") { solve07A(it) }
+    execute("day07.txt") { solve07A(it) }
+    execute("day07.txt") { solve07A(it) }
+    execute("day07.txt") { solve07A(it) }
     execute("day07.txt") { solve07B(it) }
 }
 
 fun solve07A(input: Sequence<String>): Long {
-    val fileSystem = FileSystem()
-    val terminal = Terminal(fileSystem)
-    input.forEach { terminal.interpret(it) }
+    val fileSystem = input.fold(FileSystem()) { fs, line -> fs.interpret(line) }
 
     var largeDirs = 0L
     fileSystem.sizes(fileSystem.root) { node, size ->
@@ -19,33 +20,28 @@ fun solve07A(input: Sequence<String>): Long {
     return largeDirs
 }
 
-fun solve07B(input: Sequence<String>): Int {
-    return 0
-}
+fun solve07B(input: Sequence<String>): Long {
+    val fileSystem = input.fold(FileSystem()) { fs, line -> fs.interpret(line) }
 
-class Terminal(private val fileSystem: FileSystem) {
-    fun interpret(line: String) {
-        if (line.startsWith("$ cd")) {
-            fileSystem.cd(line.substring(5))
-        } else if (line.startsWith("$ ls")) {
-            // no-op
-        } else if (line.startsWith("dir")) {
-            fileSystem.addNode(line.substring(4), true, 0)
-        } else {
-            fileSystem.addNode(line.substringAfter(" "), false, line.substringBefore(" ").toLong())
-        }
+    val sizes = mutableListOf<Long>()
+    val total = fileSystem.sizes(fileSystem.root) { _, size ->
+        sizes.add(size)
     }
+
+    val needed = 30000000 - (70000000 - total)
+    var smallestBigEnough = Long.MAX_VALUE
+    sizes.forEach { if (it in needed until smallestBigEnough) smallestBigEnough = it }
+    return smallestBigEnough
 }
 
 class FileSystem {
     val root = Node("/", true, 0)
     private var cwd = root
 
-    fun addNode(name: String, isDirectory: Boolean, size: Long) {
-        cwd.addChild(Node(name, isDirectory, size))
-    }
+    private fun addFile(name: String, size: Long) = cwd.addChild(Node(name, false, size))
+    private fun addDirectory(name: String) = cwd.addChild(Node(name, true, 0))
 
-    fun cd(name: String) {
+    private fun cd(name: String) {
         cwd = when (name) {
             "/" -> root
             ".." -> cwd.parent
@@ -62,9 +58,19 @@ class FileSystem {
         action(node, size)
         return size
     }
+
+    fun interpret(line: String) : FileSystem {
+        when {
+            line.startsWith("$ cd") -> cd(line.substring(5))
+            line.startsWith("$ ls") -> {}
+            line.startsWith("dir")  -> addDirectory(line.substring(4))
+            else -> addFile(line.substringAfter(" "), line.substringBefore(" ").toLong())
+        }
+        return this
+    }
 }
 
-class Node(val name: String, val isDirectory: Boolean, val size: Long) {
+class Node(private val name: String, val isDirectory: Boolean, val size: Long) {
     var parent = this
     val children = mutableListOf<Node>()
 
