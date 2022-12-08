@@ -1,6 +1,7 @@
 package dev.gresty.aoc.adventofcode2022.day08
 
 import dev.gresty.aoc.adventofcode2022.execute
+import kotlin.math.abs
 
 fun main() {
     execute("day08.txt") { solve08A(it) }
@@ -9,13 +10,12 @@ fun main() {
 
 fun solve08A(input: Sequence<String>): Int {
     val forest = input.fold(Forest()) { f, r -> f.addTreeRow(r) }
-    val visible = mutableSetOf<Pair<Int, Int>>()
-    forest.findVisible { row, col, _ -> visible.add(row to col) }
-    return visible.count()
+    return forest.findVisible()
 }
 
 fun solve08B(input: Sequence<String>): Int {
-    return 0
+    val forest = input.fold(Forest()) { f, r -> f.addTreeRow(r) }
+    return forest.calculateScenic()
 }
 
 class Forest {
@@ -26,18 +26,22 @@ class Forest {
         return this
     }
 
-    fun findVisible(action: (row: Int, col: Int, height:Int) -> Unit) {
-        trees.indices.forEach {
-            val lastCol = findVisibleInRow(it, trees[0].indices, action)
-            findVisibleInRow(it, (trees[0].length - 1) downTo (lastCol + 1), action)
+    fun findVisible() : Int {
+        val visible = mutableSetOf<Pair<Int, Int>>()
+        fun onVisible(r: Int, c: Int) = visible.add(r to c)
+
+        rows().forEach {
+            val lastCol = findVisibleInRow(it, trees[0].indices, ::onVisible)
+            findVisibleInRow(it, (trees[0].length - 1) downTo (lastCol + 1), ::onVisible)
         }
-        trees[0].indices.forEach {
-            val lastRow = findVisibleInColumn(it, trees.indices, action)
-            findVisibleInColumn(it, (trees.size - 1) downTo (lastRow + 1), action)
+        cols().forEach {
+            val lastRow = findVisibleInColumn(it, trees.indices, ::onVisible)
+            findVisibleInColumn(it, (trees.size - 1) downTo (lastRow + 1), ::onVisible)
         }
+        return visible.count()
     }
 
-    private fun findVisibleInRow(row: Int, cols: IntProgression, action: (Int, Int, Int) -> Unit) : Int {
+    private fun findVisibleInRow(row: Int, cols: IntProgression, action: (Int, Int) -> Unit) : Int {
         val treeRow = trees[row]
         var max = -1
         var lastVisibleCol = 0
@@ -45,23 +49,75 @@ class Forest {
             if (treeRow[it] - '0' > max) {
                 max = treeRow[it] - '0'
                 lastVisibleCol = it
-                action(row, it, max)
+                action(row, it)
             }
         }
         return lastVisibleCol
     }
 
-    private fun findVisibleInColumn(col: Int, rows: IntProgression, action: (Int, Int, Int) -> Unit) : Int {
+    private fun findVisibleInColumn(col: Int, rows: IntProgression, action: (Int, Int) -> Unit) : Int {
         var max = -1
         var lastVisibleRow = 0
         rows.forEach {
             if (trees[it][col] - '0' > max) {
                 max = trees[it][col] - '0'
                 lastVisibleRow = it
-                action(it, col, max)
+                action(it, col)
             }
         }
         return lastVisibleRow
     }
+
+    fun calculateScenic() : Int {
+        val scenic = Array(trees.size) { _ -> IntArray(trees[0].length) { _ -> 1 } }
+        val rows = rows()
+        val cols = cols()
+        val rowsReversed = rows.reversed()
+        val colsReversed = cols.reversed()
+
+        rows.forEach {row ->
+            updateScenicForLine(row, cols, false, scenic)
+            updateScenicForLine(row, colsReversed, false, scenic)
+        }
+        cols.forEach { col ->
+            updateScenicForLine(col, rows, true, scenic)
+            updateScenicForLine(col, rowsReversed, true, scenic)
+        }
+
+        return scenic.asSequence()
+            .flatMap { it.asSequence() }
+            .max()
+    }
+
+    private fun updateScenicForLine(fixed: Int, variable: IntProgression, transpose: Boolean, scenic: Array<IntArray>) {
+        val treesOfHeight = Array(10) {_ -> mutableSetOf<Int>() }
+
+        fun updateScenicForTreeHeight(treeIndex: Int, height: Int) =
+            (0..height).forEach { h ->
+                treesOfHeight[h].forEach { t ->
+                    updateScenic(scenic, fixed, t, transpose, abs(treeIndex - t))
+                }
+                treesOfHeight[h].clear()
+            }
+
+        variable.forEach {
+            val height = tree(fixed, it, transpose)
+            updateScenicForTreeHeight(it, height)
+            treesOfHeight[height].add(it)
+        }
+        updateScenicForTreeHeight(variable.last, 9)
+    }
+
+    private fun updateScenic(scenic: Array<IntArray>, row: Int, col: Int, transpose: Boolean, value: Int) {
+        if (transpose) {
+            scenic[col][row] *= value
+        } else {
+            scenic[row][col] *= value
+        }
+    }
+
+    private fun rows() = trees.indices
+    private fun cols() = trees[0].indices
+    private fun tree(row: Int, col: Int, transpose: Boolean) = if (transpose) trees[col][row] - '0' else trees[row][col] - '0'
 }
 

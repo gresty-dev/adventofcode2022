@@ -21,7 +21,7 @@ class Day08Tests : FunSpec () {
         }
 
         test("Execute example B") {
-            solve08B(example1.lineSequence()).shouldBe(0)
+            solve08B(example1.lineSequence()).shouldBe(8)
         }
     }
 }
