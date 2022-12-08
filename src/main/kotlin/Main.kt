@@ -1,37 +1,14 @@
 package dev.gresty.aoc.adventofcode2022
 
-import dev.gresty.aoc.adventofcode2022.day01.solve01A
-import dev.gresty.aoc.adventofcode2022.day01.solve01B
-import dev.gresty.aoc.adventofcode2022.day02.solve02A
-import dev.gresty.aoc.adventofcode2022.day02.solve02B
-import dev.gresty.aoc.adventofcode2022.day03.solve03A
-import dev.gresty.aoc.adventofcode2022.day03.solve03B
-import dev.gresty.aoc.adventofcode2022.day04.solve04A
-import dev.gresty.aoc.adventofcode2022.day04.solve04B
-import dev.gresty.aoc.adventofcode2022.day05.solve05A
-import dev.gresty.aoc.adventofcode2022.day05.solve05B
-import dev.gresty.aoc.adventofcode2022.day06.solve06A
-import dev.gresty.aoc.adventofcode2022.day06.solve06B
-import dev.gresty.aoc.adventofcode2022.day07.solve07A
-import dev.gresty.aoc.adventofcode2022.day07.solve07B
-import dev.gresty.aoc.adventofcode2022.day08.solve08A
-import dev.gresty.aoc.adventofcode2022.day08.solve08B
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-private val commandsByName = listOf(
-    ::solve01A, ::solve01B,
-    ::solve02A, ::solve02B,
-    ::solve03A, ::solve03B,
-    ::solve04A, ::solve04B,
-    ::solve05A, ::solve05B,
-    ::solve06A, ::solve06B,
-    ::solve07A, ::solve07B,
-    ::solve08A, ::solve08B,
-).associateBy { it.name }
+private val solutions = listOf<Day<*>>(
+    Day01(), Day02(), Day03(), Day04(), Day05(), Day06(), Day07(), Day08()
+)
 
 @Command(name = "aoc22",
     mixinStandardHelpOptions = true, // add --help and --version options
@@ -44,7 +21,9 @@ class MyApp : Callable<Int> {
     override fun call(): Int {
 
         if (day == 0) {
-            for (d in 1..(commandsByName.size / 2)) execute(d)
+            val totalTime = (1..solutions.size).asSequence().map { execute(it) }.sum()
+            println("Total time: $totalTime us)")
+
         } else {
             execute(day)
         }
@@ -52,15 +31,13 @@ class MyApp : Callable<Int> {
         return 0
     }
 
-    fun execute(day: Int) {
-        val dayName = "%02d".format(day)
-        val solveA = commandsByName["solve${dayName}A"]
-        val solveB = commandsByName["solve${dayName}B"]
+    fun execute(dayNumber: Int) : Long {
+        val dayName = "%02d".format(dayNumber)
+        val day = solutions[dayNumber - 1]
         val input = "day${dayName}.txt"
 
         println("Day $day")
-        execute(input) { solveA!!(it) }
-        execute(input) { solveB!!(it) }
+        return execute(input) { day.solveA(it) } + execute(input) { day.solveB(it) }
     }
 }
 

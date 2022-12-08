@@ -1,7 +1,5 @@
 package dev.gresty.aoc.adventofcode2022
 
-import dev.gresty.aoc.adventofcode2022.day04.solve04A
-import dev.gresty.aoc.adventofcode2022.day04.solve04B
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -18,11 +16,11 @@ class Day04Tests : FunSpec () {
 
     init {
         test("Execute example A") {
-            solve04A(example1.lineSequence()).shouldBe(2)
+            Day04().solveA(example1.lineSequence()).shouldBe(2)
         }
 
         test("Execute example B") {
-            solve04B(example1.lineSequence()).shouldBe(4)
+            Day04().solveB(example1.lineSequence()).shouldBe(4)
         }
     }
 }

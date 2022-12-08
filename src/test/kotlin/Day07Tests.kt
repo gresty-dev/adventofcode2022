@@ -1,7 +1,5 @@
 package dev.gresty.aoc.adventofcode2022
 
-import dev.gresty.aoc.adventofcode2022.day07.solve07A
-import dev.gresty.aoc.adventofcode2022.day07.solve07B
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -35,11 +33,11 @@ class Day07Tests : FunSpec () {
 
     init {
         test("Execute example A") {
-            solve07A(example1.lineSequence()).shouldBe(95437L)
+            Day07().solveA(example1.lineSequence()).shouldBe(95437L)
         }
 
         test("Execute example B") {
-            solve07B(example1.lineSequence()).shouldBe(0)
+            Day07().solveB(example1.lineSequence()).shouldBe(0)
         }
     }
 }
