@@ -89,13 +89,14 @@ class Day08 : Day<Int> {
                 .max()
         }
 
+        private val treesOfHeight = Array(10) { _ -> mutableSetOf<Int>() }
+
         private fun updateScenicForLine(
             fixed: Int,
             variable: IntProgression,
             transpose: Boolean,
             scenic: Array<IntArray>
         ) {
-            val treesOfHeight = Array(10) { _ -> mutableSetOf<Int>() }
 
             fun updateScenicForTreeHeight(treeIndex: Int, height: Int) =
                 (0..height).forEach { h ->
