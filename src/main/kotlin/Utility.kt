@@ -15,6 +15,6 @@ fun <T> execute(resourceName: String, task: (Sequence<String>) -> T) : Long {
     val resource = cache(resourceName).asSequence()
     val result: T
     val time = measureNanoTime { result = task.invoke(resource) }.nanoseconds.inWholeMicroseconds
-    println("$result ($time us)")
+    println("$result ($time 𝜇s)")
     return time
 }

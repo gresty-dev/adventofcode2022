@@ -21,8 +21,8 @@ class MyApp : Callable<Int> {
     override fun call(): Int {
 
         if (day == 0) {
-            val totalTime = (1..solutions.size).asSequence().map { execute(it) }.sum()
-            println("Total time: $totalTime us)")
+            val totalTime = (1..solutions.size).asSequence().map { execute(it) }.onEach { println() }.sum()
+            println("Total time: $totalTime 𝜇s")
 
         } else {
             execute(day)
@@ -36,7 +36,7 @@ class MyApp : Callable<Int> {
         val day = solutions[dayNumber - 1]
         val input = "day${dayName}.txt"
 
-        println("Day $day")
+        println("Day $dayName")
         return execute(input) { day.solveA(it) } + execute(input) { day.solveB(it) }
     }
 }
