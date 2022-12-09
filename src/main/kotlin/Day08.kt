@@ -3,8 +3,8 @@ package dev.gresty.aoc.adventofcode2022
 import kotlin.math.abs
 
 fun main() {
-    execute("day08.txt") { Day08().solveA(it) }
-    execute("day08.txt") { Day08().solveB(it) }
+    execute(8) { Day08().solveA(it) }
+    execute(8) { Day08().solveB(it) }
 }
 
 class Day08 : Day<Int> {

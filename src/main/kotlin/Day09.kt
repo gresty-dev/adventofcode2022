@@ -3,8 +3,8 @@ package dev.gresty.aoc.adventofcode2022
 import kotlin.math.sign
 
 fun main() {
-    execute("day09.txt") { Day09().solveA(it) }
-    execute("day09.txt") { Day09().solveB(it) }
+    execute(9) { Day09().solveA(it) }
+    execute(9) { Day09().solveB(it) }
 }
 
 class Day09 : Day<Int> {

@@ -32,12 +32,9 @@ class MyApp : Callable<Int> {
     }
 
     fun execute(dayNumber: Int) : Long {
-        val dayName = "%02d".format(dayNumber)
         val day = solutions[dayNumber - 1]
-        val input = "day${dayName}.txt"
-
-        println("Day $dayName")
-        return execute(input) { day.solveA(it) } + execute(input) { day.solveB(it) }
+        println("Day $dayNumber")
+        return execute(dayNumber) { day.solveA(it) } + execute(dayNumber) { day.solveB(it) }
     }
 }
 

@@ -1,8 +1,8 @@
 package dev.gresty.aoc.adventofcode2022
 
 fun main() {
-    execute("day05.txt") { Day05().solveA(it) }
-    execute("day05.txt") { Day05().solveB(it) }
+    execute(5) { Day05().solveA(it) }
+    execute(5) { Day05().solveB(it) }
 }
 
 class Day05 : Day<String> {

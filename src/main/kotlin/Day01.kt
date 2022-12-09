@@ -2,8 +2,8 @@ package dev.gresty.aoc.adventofcode2022
 
 fun main() {
     val today = Day01()
-    execute("day01.txt") { today.solveA(it) }
-    execute("day01.txt") { today.solveB(it) }
+    execute(1) { today.solveA(it) }
+    execute(1) { today.solveB(it) }
 }
 
 class Day01 : Day<Int> {
