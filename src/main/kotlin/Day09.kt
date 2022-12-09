@@ -41,6 +41,8 @@ class Day09 : Day<Int> {
         }
 
         private fun moveTail() {
+            val lastx = x[tailEnd]
+            val lasty = y[tailEnd]
             for (i in 1 .. tailEnd) {
                 val dx = x[i - 1] - x[i]
                 val dy = y[i - 1] - y[i]
@@ -48,7 +50,8 @@ class Day09 : Day<Int> {
                 x[i] += dx.sign
                 y[i] += dy.sign
             }
-            visited.add(x[tailEnd] to y[tailEnd])
+            if (x[tailEnd] != lastx || y[tailEnd] != lasty)
+                visited.add(x[tailEnd] to y[tailEnd])
         }
     }
 }
