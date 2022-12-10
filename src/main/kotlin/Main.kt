@@ -6,8 +6,8 @@ import picocli.CommandLine.Parameters
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-private val solutions = listOf<Day<*>>(
-    Day01(), Day02(), Day03(), Day04(), Day05(), Day06(), Day07(), Day08(), Day09()
+private val solutions = listOf<Day<*, *>>(
+    Day01(), Day02(), Day03(), Day04(), Day05(), Day06(), Day07(), Day08(), Day09(), Day10()
 )
 
 @Command(name = "aoc22",
