@@ -37,7 +37,7 @@ class Day07Tests : FunSpec () {
         }
 
         test("Execute example B") {
-            Day07().solveB(example1.lineSequence()).shouldBe(0)
+            Day07().solveB(example1.lineSequence()).shouldBe(24933642L)
         }
     }
 }

@@ -51,7 +51,7 @@ class Day07 : Day<Long, Long> {
                 size += sizes(it, action)
             }
             size += node.size
-            action(node, size)
+            if (node.isDirectory) action(node, size)
             return size
         }
 
