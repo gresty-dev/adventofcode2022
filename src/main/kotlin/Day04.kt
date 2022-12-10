@@ -5,7 +5,7 @@ fun main() {
     execute(4) { Day04().solveB(it) }
 }
 
-class Day04 : Day<Int> {
+class Day04 : Day<Int, Int> {
     override fun solveA(input: Sequence<String>): Int {
         return input.map { it.asIntRangePair() }
             .filter { it.first wraps it.second || it.second wraps it.first }

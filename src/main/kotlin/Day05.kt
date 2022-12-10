@@ -5,7 +5,7 @@ fun main() {
     execute(5) { Day05().solveB(it) }
 }
 
-class Day05 : Day<String> {
+class Day05 : Day<String, String> {
     override fun solveA(input: Sequence<String>): String {
         return solve(input) { dock, move -> dock.move1(move) }
     }

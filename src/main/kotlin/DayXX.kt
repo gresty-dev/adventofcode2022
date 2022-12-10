@@ -5,7 +5,7 @@ fun main() {
     execute(0) { DayXX().solveB(it) }
 }
 
-class DayXX : Day<Int> {
+class DayXX : Day<Int, Int> {
     override fun solveA(input: Sequence<String>): Int {
         return 0
     }

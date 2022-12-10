@@ -5,7 +5,7 @@ fun main() {
     execute(7) { Day07().solveB(it) }
 }
 
-class Day07 : Day<Long> {
+class Day07 : Day<Long, Long> {
     override fun solveA(input: Sequence<String>): Long {
         val fileSystem = input.fold(FileSystem()) { fs, line -> fs.interpret(line) }
 

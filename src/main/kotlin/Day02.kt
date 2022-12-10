@@ -5,7 +5,7 @@ fun main() {
     execute(2) { Day02().solveB(it) }
 }
 
-class Day02 : Day<Int> {
+class Day02 : Day<Int, Int> {
     override fun solveA(input: Sequence<String>): Int {
         return input.map { handOf(it[0]).plays(handOf(it[2])) }.sum()
     }

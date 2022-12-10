@@ -7,7 +7,7 @@ fun main() {
     execute(9) { Day09().solveB(it) }
 }
 
-class Day09 : Day<Int> {
+class Day09 : Day<Int, Int> {
     override fun solveA(input: Sequence<String>): Int {
         return input.fold(Rope(2)) { acc, move -> acc.moveHead(move) }.visited()
     }

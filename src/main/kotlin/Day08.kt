@@ -7,7 +7,7 @@ fun main() {
     execute(8) { Day08().solveB(it) }
 }
 
-class Day08 : Day<Int> {
+class Day08 : Day<Int, Int> {
     override fun solveA(input: Sequence<String>): Int {
         val forest = input.fold(Forest()) { f, r -> f.addTreeRow(r) }
         return forest.findVisible()
