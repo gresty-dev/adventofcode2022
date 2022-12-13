@@ -19,7 +19,7 @@ class Day12Tests : FunSpec () {
         }
 
         test("Execute example B") {
-            Day12().solveB(example1.lineSequence()).shouldBe(0)
+            Day12().solveB(example1.lineSequence()).shouldBe(29)
         }
     }
 }

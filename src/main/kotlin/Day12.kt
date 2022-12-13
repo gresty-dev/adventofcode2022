@@ -1,6 +1,6 @@
 package dev.gresty.aoc.adventofcode2022
 
-import java.util.PriorityQueue
+import kotlin.collections.ArrayDeque
 
 fun main() {
     execute(12) { Day12().solveA(it) }
@@ -56,22 +56,24 @@ class Day12 : Day<Int, Int> {
                        val setDistance: (IntPair, Int) -> Unit,
                        val setVisited: (IntPair) -> Unit) {
 
-        private val queue = PriorityQueue<IntPair> { x, y -> distance(x) - distance(y) }
+        // No need for a priority queue, as all distances between adjacent nodes are 1
+        // Which basically makes this a BFS
+        private val queue = ArrayDeque<IntPair>()
 
         fun find() : Int {
             setDistance(start, 0)
-            queue.add(start)
-            val finished = false
+            queue.addLast(start)
             var current = start
-            while (queue.isNotEmpty() && !finished) {
-                current = queue.remove()
+
+            while (queue.isNotEmpty()) {
+                current = queue.removeFirst()
                 if (isEnd(current)) break
-                val distance = distance(current)
+                val distance = distance(current) + 1
                 next(current).forEach {
-                    if (distance + 1 < distance(it)) {
-                        setDistance(it, distance + 1)
+                    if (distance < distance(it)) {
+                        setDistance(it, distance)
                         queue.remove(it)
-                        queue.add(it)
+                        queue.addLast(it)
                     }
                 }
                 setVisited(current)
