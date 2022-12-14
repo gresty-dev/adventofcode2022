@@ -22,7 +22,14 @@ class Day13 : Day<Int, Int> {
     }
 
     override fun solveB(input: Sequence<String>): Int {
-        return 0
+        return (sequenceOf("[[2]]", "[[6]]") + input)
+            .filter { it.isNotEmpty() }
+            .map { parsePacket(it) }
+            .sortedWith(::compareList)
+            .withIndex()
+            .filter { it.value.isDivider }
+            .map { it.index + 1 }
+            .reduce { a, b -> a*b }
     }
 
     fun compareList(packet1: Packet, packet2: Packet, inList: Boolean = false) : Int {
@@ -46,6 +53,10 @@ class Day13 : Day<Int, Int> {
                 else -> false
             }
         } while (!finishedList)
+        if (!inList) {
+            packet1.reset()
+            packet2.reset()
+        }
         return result
     }
 
@@ -57,11 +68,14 @@ class Day13 : Day<Int, Int> {
 
     val packetRegex = """(\[|]|\d+)""".toRegex()
 
-    fun parsePacket(input: String) = Packet(packetRegex.findAll(input).map { it.value }.toList())
+    fun parsePacket(input: String) = Packet(packetRegex.findAll(input).map { it.value }.toList(), input == "[[2]]" || input == "[[6]]" )
     fun packetize(intVal: String) = Packet(listOf(intVal, "]"))
 
-    class Packet(val elements: List<String>) {
+    class Packet(val elements: List<String>, val isDivider: Boolean = false) {
         var index = 0
         fun next() = elements[index++]
+        fun reset() {
+            index = 0
+        }
     }
 }
