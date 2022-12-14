@@ -36,6 +36,7 @@ class Day11 : Day<Long, Long> {
     private val ifFalseRegex = """If false: throw to monkey (\d+)""".toRegex()
 
     private fun makeMonkeys(input: Sequence<String>) : Map<Int, Monkey> {
+
         val monkeys = mutableMapOf<Int, Monkey>()
         var num = -1
         input.forEach {
@@ -44,7 +45,7 @@ class Day11 : Day<Long, Long> {
                 monkeys[num] = Monkey(::modulator, ::reducer)
             }
             itemsRegex.find(it)?.let { match -> monkeys[num]!!.parseItems(match.groupValues[1]) }
-            operationRegex.find(it)?.let { match -> monkeys[num]!!.operation = parseFormula(match.groupValues[1]) }
+            operationRegex.find(it)?.let { match -> monkeys[num]!!.operation = parseOperation(match.groupValues[1]) }
             testRegex.find(it)?.let { match ->
                 val divisor = match.groupValues[1].toInt()
                 monkeys[num]!!.testDivisor = divisor
@@ -59,7 +60,7 @@ class Day11 : Day<Long, Long> {
     class Monkey(val modulator: () -> Int, val worryReducer: () -> Int) { // use a builder...
         private val items = mutableListOf<Long>()
         var testDivisor: Int? = null
-        var operation: FormulaNode? = null
+        var operation: ((Long) -> Long)? = null
         var ifTrue: Int? = null
         var ifFalse: Int? = null
         var inspections = 0L
@@ -84,7 +85,7 @@ class Day11 : Day<Long, Long> {
 
         private fun inspect(item: Long) : Long {
             inspections++
-            return operation!!.value(mapOf("old" to item)) / worryReducer()
+            return operation!!(item) / worryReducer()
         }
 
         private fun add(item: Long) {
@@ -93,6 +94,20 @@ class Day11 : Day<Long, Long> {
 
         override fun toString(): String {
             return "inspected: $inspections"
+        }
+    }
+
+    fun parseOperation(input: String) : (Long) -> Long {
+        val op = input[4]
+        val other = input.substring(6)
+        if (other == "old") {
+            return { x -> x * x }
+        }
+        val otherLong = other.toLong()
+        if (op == '*') {
+            return { x -> x * otherLong }
+        } else {
+            return { x -> x + otherLong }
         }
     }
 
