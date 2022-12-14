@@ -5,23 +5,25 @@ fun main() {
     execute(13) { Day13().solveB(it) }
 }
 
+private const val DIVIDER_1 = "[[2]]"
+private const val DIVIDER_2 = "[[6]]"
+
+private const val LESS = -1
+private const val EQUAL = 0
+private const val GREATER = 1
+
 class Day13 : Day<Int, Int> {
 
-    private val less = -1
-    private val equal = 0
-    private val greater = 1
-
-    override fun solveA(input: Sequence<String>): Int {
-        return input.chunked(3)
+    override fun solveA(input: Sequence<String>) =
+        input.chunked(3)
             .map { compareList(parsePacket(it[0]), parsePacket(it[1])) }
             .withIndex()
-            .filter { it.value != greater }
+            .filter { it.value != GREATER }
             .map { it.index + 1 }
             .sum()
-    }
 
-    override fun solveB(input: Sequence<String>): Int {
-        return (sequenceOf("[[2]]", "[[6]]") + input)
+    override fun solveB(input: Sequence<String>) =
+        input.plus(sequenceOf(DIVIDER_1, DIVIDER_2))
             .filter { it.isNotEmpty() }
             .map { parsePacket(it) }
             .sortedWith(::compareList)
@@ -29,7 +31,6 @@ class Day13 : Day<Int, Int> {
             .filter { it.value.isDivider }
             .map { it.index + 1 }
             .reduce { a, b -> a*b }
-    }
 
     private fun compareList(packet1: Packet, packet2: Packet, inList: Boolean = false) : Int {
         var finishedList: Boolean
@@ -39,16 +40,16 @@ class Day13 : Day<Int, Int> {
             val s2 = packet2.next()
             result = when {
                 s1 == "[" && s2 == "[" -> compareList(packet1, packet2, true)
-                s1 == "]" && s2 != "]" -> less
-                s1 != "]" && s2 == "]" -> greater
-                s1 == "]" && s2 == "]" -> equal
+                s1 == "]" && s2 != "]" -> LESS
+                s1 != "]" && s2 == "]" -> GREATER
+                s1 == "]" && s2 == "]" -> EQUAL
                 s1 == "[" -> compareList(packet1, packetize(s2), true)
                 s2 == "[" -> compareList(packetize(s1), packet2, true)
                 else -> compareInt(s1.toInt(), s2.toInt())
             }
             finishedList = when (result) {
-                less, greater -> true
-                equal -> !inList || s1 == "]"
+                LESS, GREATER -> true
+                EQUAL -> !inList || s1 == "]"
                 else -> false
             }
         } while (!finishedList)
@@ -60,14 +61,14 @@ class Day13 : Day<Int, Int> {
     }
 
     private fun compareInt(i1: Int, i2: Int) = when {
-        i1 < i2 -> less
-        i1 > i2 -> greater
-        else -> equal
+        i1 < i2 -> LESS
+        i1 > i2 -> GREATER
+        else -> EQUAL
     }
 
     private val packetRegex = """(\[|]|\d+)""".toRegex()
 
-    private fun parsePacket(input: String) = Packet(packetRegex.findAll(input).map { it.value }.toList(), input == "[[2]]" || input == "[[6]]" )
+    private fun parsePacket(input: String) = Packet(packetRegex.findAll(input).map { it.value }.toList(), input == DIVIDER_1 || input == DIVIDER_2)
     private fun packetize(intVal: String) = Packet(listOf(intVal, "]"))
 
     class Packet(private val elements: List<String>, val isDivider: Boolean = false) {
