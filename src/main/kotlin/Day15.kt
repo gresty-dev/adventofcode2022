@@ -7,14 +7,26 @@ fun main() {
     execute(15) { Day15().solveB(it) }
 }
 
-class Day15(val part1RowToCheck: Int = 2_000_000) : Day<Int, Int> {
+class Day15(val part1RowToCheck: Int = 2_000_000, val maxSize: Int = 4_000_000) : Day<Int, Long> {
 
     override fun solveA(input: Sequence<String>): Int {
-        val beaconDistances = input.map(::parse).map { it.first to it.first.manhattan(it.second) }.toMap()
-        return countIntersectionsWithRow(beaconDistances, part1RowToCheck)
+        val sensorBeacons = input.map(::parse).toMap()
+        return countIntersectionsWithRow(sensorBeacons, part1RowToCheck)
     }
 
-    override fun solveB(input: Sequence<String>): Int {
+    override fun solveB(input: Sequence<String>): Long {
+        val sensorBeacons = input.map { parse(it) }
+            .map { it.first to it.first.manhattan(it.second) }
+            .toMap()
+        for (y in 0..maxSize) {
+            val intersections = intersectionsWithRow(sensorBeacons, y)
+            if (intersections.size == 2) {
+                val asList = intersections.toList()
+                val x = if (asList[0].first < asList[1].first) asList[0].last + 1 else asList[1].last + 1
+                return x.toLong() * 4_000_000L + y.toLong()
+            }
+        }
+
         return 0
     }
 
@@ -24,11 +36,23 @@ class Day15(val part1RowToCheck: Int = 2_000_000) : Day<Int, Int> {
         return IntPair(values[1].toInt(), values[2].toInt()) to IntPair(values[3].toInt(), values[4].toInt())
     }
 
-    fun countIntersectionsWithRow(beaconDistances: Map<IntPair, Int>, yIntersect: Int) =
-        beaconDistances.map { intersect(it.key, it.value, yIntersect) }
+    fun countIntersectionsWithRow(sensorBeacons: Map<IntPair, IntPair>, yIntersect: Int) : Int {
+        val beaconsOnRow = sensorBeacons.values.filter { it.second == yIntersect }.map { it.first }.toSet()
+        return sensorBeacons.map { intersect(it.key, it.key.manhattan(it.value), yIntersect) }
             .fold(mutableSetOf<IntRange>()) { set, range -> addRange(set, range) }
-            .map { it.count() }
+            .map { count(it, beaconsOnRow) }
             .sum()
+    }
+
+    fun intersectionsWithRow(sensorDistances: Map<IntPair, Int>, yIntersect: Int) : Set<IntRange> {
+        return sensorDistances.map { intersect(it.key, it.value, yIntersect) }
+            .map { (0..maxSize).intersect(it) }
+            .fold(mutableSetOf()) { set, range -> addRange(set, range) }
+    }
+
+    fun count(range: IntRange, beacons: Set<Int>) : Int {
+        return range.count() - beacons.filter { range.contains(it) }.count()
+    }
 
     fun intersect(point: IntPair, radius: Int, yIntersect: Int) : IntRange? {
         if (yIntersect < point.second - radius || yIntersect > point.second + radius) return null
@@ -49,8 +73,3 @@ class Day15(val part1RowToCheck: Int = 2_000_000) : Day<Int, Int> {
 
 }
 
-operator fun IntPair.minus(other: IntPair) = IntPair(first - other.first, second - other.second)
-fun IntPair.manhattan(other: IntPair) = (first - other.first).absoluteValue + (second - other.second).absoluteValue
-
-fun IntRange.intersects(other: IntRange?) = other?.let { !(last < other.first || start > other.last) } ?: false
-operator fun IntRange.plus(other: IntRange?) = other?.let { minOf(first, other.first)..maxOf(last, other.last) } ?: this

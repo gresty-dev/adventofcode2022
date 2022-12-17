@@ -1,5 +1,7 @@
 package dev.gresty.aoc.adventofcode2022
 
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 import kotlin.system.measureNanoTime
 import kotlin.time.Duration.Companion.nanoseconds
 
@@ -7,6 +9,33 @@ import kotlin.time.Duration.Companion.nanoseconds
 
 typealias IntPair = Pair<Int, Int>
 operator fun IntPair.plus(other: IntPair) = IntPair(first + other.first, second + other.second)
+operator fun IntPair.minus(other: IntPair) = IntPair(first - other.first, second - other.second)
+operator fun IntPair.div(other: IntPair) = maxOf(first / other.first, second / other.second)
+fun IntPair.sign() = IntPair(first.sign, second.sign)
+fun IntPair.manhattan(other: IntPair) = (first - other.first).absoluteValue + (second - other.second).absoluteValue
+fun intPairOf(string: String) = IntPair(string.substringBefore(",").toInt(), string.substringAfter(",").toInt());
+
+operator fun IntRange.plus(other: IntRange?) = other?.let { minOf(first, other.first)..maxOf(last, other.last) } ?: this
+fun IntRange.intersects(other: IntRange?) = other?.let { !(last < other.first || start > other.last) } ?: false
+fun IntRange.intersect(other: IntRange?) = other?.let {
+    if (first > other.last || last < other.first) null
+    else maxOf(first, other.first)..minOf(last, other.last)
+} ?: null
+
+//internal class IntPairIterator(start: IntPair, val endInclusive: IntPair) : Iterator<IntPair> {
+//    val step = (endInclusive - start).sign()
+//    var current = start
+//
+//    override fun hasNext(): Boolean {
+//        current != endInclusive
+//    }
+//
+//    override fun next(): IntPair {
+//        val next = current
+//        current += step
+//        return next
+//    }
+//}
 
 fun read(resourceName: String) : Sequence<String> {
     return object {}.javaClass.getResourceAsStream(resourceName)?.bufferedReader()?.lineSequence()!!

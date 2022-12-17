@@ -28,7 +28,7 @@ class Day15Tests : FunSpec () {
         }
 
         test("Execute example B") {
-            Day15().solveB(example1.lineSequence()).shouldBe(0)
+            Day15(maxSize = 20).solveB(example1.lineSequence()).shouldBe(56000011)
         }
     }
 }
