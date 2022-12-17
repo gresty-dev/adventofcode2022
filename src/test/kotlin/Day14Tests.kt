@@ -12,11 +12,11 @@ class Day14Tests : FunSpec () {
 
     init {
         test("Execute example A") {
-            Day14().solveA(example1.lineSequence()).shouldBe(0)
+            Day14().solveA(example1.lineSequence()).shouldBe(24)
         }
 
         test("Execute example B") {
-            Day14().solveB(example1.lineSequence()).shouldBe(0)
+            Day14().solveB(example1.lineSequence()).shouldBe(93)
         }
     }
 }
