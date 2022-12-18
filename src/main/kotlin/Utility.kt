@@ -40,6 +40,38 @@ fun <T> execute(day: Int, task: (Sequence<String>) -> T) : Long {
 
 fun resourceName(day: Int) = "day%02d.txt".format(day)
 
+class ShortestPath<T>(private val start: T,
+                   private val isEnd: (T) -> Boolean,
+                   val next: (T) -> List<T>,
+                   val distance: (T) -> Int,
+                   val setDistance: (T, Int) -> Unit,
+                   val setVisited: (T) -> Unit) {
+
+    // No need for a priority queue, as all distances between adjacent nodes are 1
+    // Which basically makes this a BFS
+    private val queue = ArrayDeque<T>()
+
+    fun find() : Int {
+        setDistance(start, 0)
+        queue.addLast(start)
+        var current = start
+
+        while (queue.isNotEmpty()) {
+            current = queue.removeFirst()
+            if (isEnd(current)) break
+            val distance = distance(current) + 1
+            next(current).forEach {
+                if (distance < distance(it)) {
+                    setDistance(it, distance)
+                    queue.remove(it)
+                    queue.addLast(it)
+                }
+            }
+            setVisited(current)
+        }
+        return distance(current)
+    }
+}
 //fun cache(day: Int) = cache.getOrPut(day) { download(day).toList() }
 //fun download(day: Int) : Sequence<String> {
 //    val request = Request(Method.GET, "https://adventofcode.com/2022/day/$day/input")
