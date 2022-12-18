@@ -6,68 +6,72 @@ fun main() {
 }
 
 class Day16 : Day<Int, Int> {
+    private val AA = toChar("AA")
+    private var valveCount = 0
+
     override fun solveA(input: Sequence<String>): Int {
-        val valves = input.map { parse(it) }.map { it.name to it }.toMap()
-        val distancesBetweenFlowValves = shortestDistancesToValvesWithNonZeroFlow(valves)
-        val flowValves = valves.filter { it.value.flow > 0 || it.value.name == "AA" }.toMap()
-        val start = valves["AA"]!!
-        return act(start, flowValves, distancesBetweenFlowValves, State(30, listOf(), 0), setOf(start))
+        return runSimulation(input, 30)
     }
 
     override fun solveB(input: Sequence<String>): Int {
-        val valves = input.map { parse(it) }.map { it.name to it }.toMap()
-        val distancesBetweenFlowValves = shortestDistancesToValvesWithNonZeroFlow(valves)
-        val flowValves = valves.filter { it.value.flow > 0 || it.value.name == "AA" }.toMap()
-        val start = valves["AA"]!!
-        act(start, flowValves, distancesBetweenFlowValves, State(26, listOf(), 0), setOf())
+        runSimulation(input, 26)
         return findLargesMatchingDistinctPair()
     }
 
-    fun findLargesMatchingDistinctPair() =
-        allVisited.keys.map { it to it.chunked(2).toSet() }
-            .flatMap { p1 ->
-            allVisited.keys
-                .filter { p2 -> areDistinct(p1.second, p2) }
-                .map { p2 -> p1 to p2 }
-        }.maxOf { allVisited[it.first.first]!! + allVisited[it.second]!! }
-
-
-    fun areDistinct(set1: Set<String>, path2: String) : Boolean {
-        return path2.chunked(2).toSet().count { set1.contains(it) } == 0
+    private fun runSimulation(input: Sequence<String>, time: Int): Int {
+        val valves = input.map { parse(it) }.map { it.name to it }.toMap()
+        valveCount = valves.size
+        val distancesBetweenFlowValves = shortestDistancesToValvesWithNonZeroFlow(valves)
+        val flowValves = valves.filter { it.value.flow > 0 || it.value.name == AA }.toMap()
+        val start = valves[AA]!!
+        return act(start, flowValves, distancesBetweenFlowValves, State(time, listOf(), 0), setOf())
     }
 
-    fun toChar(valveName: String) = ((valveName[0] - 'A') * 26 + (valveName[1] - 'A')).toChar()
+    private val allVisited = mutableMapOf<String, Int>()
 
-    fun shortestDistancesToValvesWithNonZeroFlow(valves: Map<String, Valve>) : Map<Pair<Valve, Valve>, Int> {
-        val flowValves = valves.values.filter { it.flow > 0 }.toList() + valves["AA"]!!
+    private fun findLargesMatchingDistinctPair() =
+        allVisited.keys
+            .flatMap { p1 -> allVisited.keys
+                .filter { p2 -> areDistinct(p1, p2) }
+                .map { p2 -> p1 to p2 }
+        }.maxOf { allVisited[it.first]!! + allVisited[it.second]!! }
+
+
+    private fun areDistinct(path1: String, path2: String) =
+        path1.length + path2.length <= valveCount && path1.none { path2.contains(it) }
+
+    private fun toChar(valveName: String) = ((valveName[0] - 'A') * 26 + (valveName[1] - 'A')).toChar()
+
+    private fun shortestDistancesToValvesWithNonZeroFlow(valves: Map<Char, Valve>) : Map<Pair<Valve, Valve>, Int> {
+        val flowValves = valves.values.filter { it.flow > 0 }.toList() + valves[AA]!!
         val flowValveDistances = mutableMapOf<Pair<Valve, Valve>, Int>()
 
         flowValves.forEach {fromValve ->
-            val valveDistances = mutableMapOf<Valve, Int>()
-            val visited = mutableMapOf<Valve, Boolean>()
+            val valveDistances = mutableMapOf<Char, Int>()
+            val visited = mutableSetOf<Char>()
 
             ShortestPath (
                 fromValve,
                 { _ -> false },
-                { v -> v.tunnels.map { t -> valves[t]!! }.filter { !visited.contains(it) }},
-                { v -> valveDistances[v] ?: Int.MAX_VALUE },
-                { v, d -> valveDistances[v] = d },
-                { v -> visited[v] = true}
+                { v -> v.tunnels.filter { !visited.contains(it) }.map { t -> valves[t]!! }},
+                { v -> valveDistances[v.name] ?: Int.MAX_VALUE },
+                { v, d -> valveDistances[v.name] = d },
+                { v -> visited.add(v.name)}
             ).find()
 
             flowValveDistances.putAll(
                 valveDistances
-                    .filter { it.key.flow > 0 }
-                    .map { (fromValve to it.key) to it.value }
+                    .map { valves[it.key]!! to it.value }
+                    .filter { it.first.flow > 0 }
+                    .map { (fromValve to it.first) to it.second }
                     .toMap())
         }
         return flowValveDistances
     }
 
-    val allVisited = mutableMapOf<String, Int>()
-    fun toNormalisedString(set: Set<Valve>) = set.map { it.name }.sorted().joinToString("")
+    private fun toNormalisedString(set: Set<Valve>) = set.map { it.name }.sorted().joinToString("")
 
-    fun act(current: Valve, valves: Map<String, Valve>, distances: Map<Pair<Valve, Valve>, Int>, state: State, visited: Set<Valve>) : Int {
+    private fun act(current: Valve, valves: Map<Char, Valve>, distances: Map<Pair<Valve, Valve>, Int>, state: State, visited: Set<Valve>) : Int {
         var maxPressureReleased = state.pressureReleased
         if (state.canOpen(current)) {
             return maxOf(maxPressureReleased, act(current, valves, distances, state.open(current), visited))
@@ -80,15 +84,14 @@ class Day16 : Day<Int, Int> {
             }
         }
 
-        var myState = state.tickDown()
+        val myState = state.tickDown()
 
         maxPressureReleased = maxOf(maxPressureReleased, myState.pressureReleased)
         allVisited.compute(toNormalisedString(visited)) { _, v -> maxOf(v ?: 0, myState.pressureReleased) }
         return maxPressureReleased
     }
 
-    data class Valve(val name: String, val flow: Int, val tunnels: List<String>) {
-    }
+    data class Valve(val name: Char, val flow: Int, val tunnels: String)
 
     data class State(val timeRemaining: Int, val openValves: List<Valve>, val pressureReleased: Int) {
 
@@ -110,15 +113,15 @@ class Day16 : Day<Int, Int> {
 
         fun canMoveToAndOpen(distance: Int, valve: Valve) = timeRemaining > distance && valve.flow > 0 && !isOpen(valve)
         fun canOpen(valve: Valve) = timeRemaining > 0 && valve.flow > 0 && !isOpen(valve)
-        fun isOpen(valve: Valve) = openValves.contains(valve)
+        private fun isOpen(valve: Valve) = openValves.contains(valve)
     }
 
-    val regex = """Valve (\w\w) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
-    fun parse(line: String) : Valve {
+    private val regex = """Valve (\w\w) has flow rate=(\d+); tunnels? leads? to valves? (.*)""".toRegex()
+    private fun parse(line: String) : Valve {
         val values = regex.find(line)!!.groupValues
-        val name = values[1]
+        val name = toChar(values[1])
         val flow = values[2].toInt()
-        val tunnels = values[3].splitToSequence(",").map { it.trim() }.toList()
+        val tunnels = values[3].splitToSequence(",").map { toChar(it.trim()) }.joinToString("")
         return Valve(name, flow, tunnels)
     }
 }
