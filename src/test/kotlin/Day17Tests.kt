@@ -11,11 +11,11 @@ class Day17Tests : FunSpec () {
 
     init {
         test("Execute example A") {
-            Day17().solveA(example1.lineSequence()).shouldBe(0)
+            Day17().solveA(example1.lineSequence()).shouldBe(3068L)
         }
 
         test("Execute example B") {
-            Day17().solveB(example1.lineSequence()).shouldBe(0)
+            Day17().solveB(example1.lineSequence()).shouldBe(1_514_285_714_288L)
         }
     }
 }
