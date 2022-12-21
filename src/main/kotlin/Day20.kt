@@ -98,11 +98,13 @@ class Day20 : Day<Long, Long> {
         }
 
         fun skip(distance: Int) : Node {
-            return if (distance > 0) {
-                (1..distance).fold(this) { node, _ -> node.next}
+            var node = this
+            if (distance > 0) {
+                repeat(distance) { node = node.next }
             } else if (distance < 0) {
-                (-1 downTo distance).fold(this) { node, _ -> node.prev}
-            } else this
+                repeat(-distance) { node = node.prev }
+            }
+            return node
         }
     }
 }
