@@ -8,7 +8,8 @@ import kotlin.system.exitProcess
 
 private val solutions = listOf<Day<*, *>>(
     Day01(), Day02(), Day03(), Day04(), Day05(), Day06(), Day07(), Day08(), Day09(), Day10(),
-    Day11(), Day12(), Day13(), Day14(), Day15(), Day16(), Day17()
+    Day11(), Day12(), Day13(), Day14(), Day15(), Day16(), Day17(), Day18(), Day19(), Day20(),
+    Day21()
 )
 
 @Command(name = "aoc22",
