@@ -8,8 +8,8 @@ import kotlin.time.Duration.Companion.nanoseconds
 //private val sessionCookie = "53616c7465645f5f9a1ca60531a1acb0563aada66f028e7353ce654a2d9131278fbd6c564cc3ee01fb8fac31e5857d1fa7e68a8afbc50de649f6cd99c8468658"
 
 typealias IntPair = Pair<Int, Int>
-operator fun IntPair.plus(other: IntPair) = IntPair(first + other.first, second + other.second)
-operator fun IntPair.minus(other: IntPair) = IntPair(first - other.first, second - other.second)
+operator fun IntPair.plus(other: IntPair?) = other?.let { IntPair(first + it.first, second + it.second) } ?: this
+operator fun IntPair.minus(other: IntPair?) = other?.let { IntPair(first - it.first, second - it.second) } ?: this
 operator fun IntPair.div(other: IntPair) = maxOf(first / other.first, second / other.second)
 fun IntPair.sign() = IntPair(first.sign, second.sign)
 fun IntPair.manhattan(other: IntPair) = (first - other.first).absoluteValue + (second - other.second).absoluteValue
