@@ -72,13 +72,15 @@ class Day23 : Day<Int, Int> {
 
         fun propose(): Map<IntPair, IntPair> {
             val proposals = mutableMapOf<IntPair, IntPair>()
-            val duplicates = mutableSetOf<IntPair>()
-            elves.forEach { elf ->
+            for (elf in elves) {
                 proposalForElf(elf)?.let { p ->
-                    proposals.put(p, elf)?.let { duplicates.add(p) }
+                    if (proposals.containsKey(p)) {
+                        proposals.remove(p)
+                    } else {
+                        proposals.put(p, elf)
+                    }
                 }
             }
-            duplicates.forEach { proposals.remove(it) }
             return proposals
         }
 
