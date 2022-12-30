@@ -6,31 +6,27 @@ fun main() {
 
 class Day25 : Day<String, Int> {
     override fun solveA(input: Sequence<String>): String {
-        return Snafu(input.map { Snafu(it).value }.sum()).asString
+        return input.map { Snafu(it) }.reduce { acc, snafu -> acc.add(snafu) }.asString
     }
 
     override fun solveB(input: Sequence<String>): Int {
         return 0
     }
 
-    class Snafu(val value: Long) {
-        constructor(snafuDigits: String) : this(fromSnafuDigits(snafuDigits))
+    class Snafu(asDigits: List<Int>) {
+        constructor(asString: String) : this(fromString(asString))
+
+        private val snafu = asDigits
 
         val asString: String
-            get() = toSnafu(value).asSequence()
+            get() = snafu.reversed().asSequence()
                 .map { digits[it + 2] }
                 .joinToString("")
-                .reversed()
 
-        private fun toSnafu(value: Long) : List<Int> {
-            val snafu = mutableListOf(0)
-            var i = 0
-            var quotient = value
-            while (quotient != 0L) {
-                addToDigit(snafu, i++, quotient.mod(5))
-                quotient /= 5
-            }
-            return snafu
+        fun add(other: Snafu) : Snafu {
+            val result = snafu.toMutableList()
+            other.snafu.withIndex().forEach { addToDigit(result, it.index, it.value) }
+            return Snafu(result)
         }
 
         private fun addToDigit(snafu: MutableList<Int>, index: Int, addMe: Int) {
@@ -40,6 +36,9 @@ class Day25 : Day<String, Int> {
             if (newVal > 2) {
                 newVal -= 5
                 overflow += 1
+            } else if (newVal < -2) {
+                newVal += 5
+                overflow -= 1
             }
             snafu[index] = newVal
             if (overflow != 0) addToDigit(snafu, index + 1, overflow)
@@ -48,9 +47,11 @@ class Day25 : Day<String, Int> {
         companion object {
             private const val digits = "=-012"
 
-            private fun fromSnafuDigits(snafuDigits: String) = snafuDigits.asSequence()
-                .map { (digits.indexOf(it) - 2).toLong() }
-                .reduce { acc, digit -> acc * 5 + digit}
+            private fun fromString(snafuDigits: String) = snafuDigits.asSequence()
+                .map { (digits.indexOf(it) - 2) }
+                .toList()
+                .reversed()
+
         }
     }
 }
