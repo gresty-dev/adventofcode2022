@@ -72,11 +72,3 @@ class ShortestPath<T>(private val start: T,
         return distance(current)
     }
 }
-//fun cache(day: Int) = cache.getOrPut(day) { download(day).toList() }
-//fun download(day: Int) : Sequence<String> {
-//    val request = Request(Method.GET, "https://adventofcode.com/2022/day/$day/input")
-//        .header("cookie", "session=$sessionCookie")
-//    val client: HttpHandler = JavaHttpClient()
-//    val response = client(request)
-//    return response.bodyString().lineSequence()
-//}
