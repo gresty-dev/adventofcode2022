@@ -48,6 +48,7 @@ class Day24 : Day<Int, Int> {
 
     class Valley {
         private val blizzards = listOf(Blizzard(Direction.UP), Blizzard(Direction.DOWN), Blizzard(Direction.LEFT), Blizzard(Direction.RIGHT))
+        private var combined = listOf<WideBitSet>()
         private val height: Int
             get() = blizzards[0].height
         private val width: Int
@@ -69,8 +70,16 @@ class Day24 : Day<Int, Int> {
             return this
         }
 
+        fun updateCombined() : Valley {
+            combined = blizzards[0].grid.indices
+                .map { y -> blizzards.map { b -> b.grid[y] }.reduce { acc, next -> acc.or(next) } }
+                .toList()
+            return this
+        }
+
         fun advanceBlizzard() {
             blizzards.forEach { it.move() }
+            updateCombined()
         }
 
         fun legalMovesFrom(position: IntPair) =
@@ -83,16 +92,11 @@ class Day24 : Day<Int, Int> {
 
         private fun blizzardAt(position: IntPair) =
             if (position.second == -1 || position.second == height) false
-            else {
-                blizzards[0].blizzardAt(position) ||
-                        blizzards[1].blizzardAt(position) ||
-                        blizzards[2].blizzardAt(position) ||
-                        blizzards[3].blizzardAt(position)
-            }
+            else combined[position.second][position.first]
     }
 
     class Blizzard(private val direction: Direction) {
-        private val grid = mutableListOf<WideBitSet>()
+        val grid = mutableListOf<WideBitSet>()
         val height: Int
             get() = grid.size
         val width: Int
@@ -107,8 +111,6 @@ class Day24 : Day<Int, Int> {
             }
             grid.add(bitset)
         }
-
-        fun blizzardAt(position: IntPair) = grid[position.second][position.first]
 
         fun move() =
             when(direction) {

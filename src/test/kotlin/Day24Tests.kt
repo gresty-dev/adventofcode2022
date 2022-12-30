@@ -35,13 +35,13 @@ class Day24Tests : FunSpec () {
         }
 
         test("Valley start and end correctly set") {
-            val valley = Day24().load(example2.lineSequence())
+            val valley = Day24().load(example2.lineSequence()).updateCombined()
             valley.start shouldBe (0 to -1)
             valley.end shouldBe (4 to 5)
         }
 
         test("Legal moves from a point") {
-            val valley = Day24().load(example2.lineSequence())
+            val valley = Day24().load(example2.lineSequence()).updateCombined()
             valley.legalMovesFrom(valley.start) shouldContainExactlyInAnyOrder listOf(valley.start, 0 to 0)
             valley.legalMovesFrom(0 to 0) shouldContainExactlyInAnyOrder listOf(0 to -1, 0 to 0, 1 to 0)
             valley.legalMovesFrom(4 to 0) shouldContainExactlyInAnyOrder listOf(4 to 0, 3 to 0, 4 to 1)
